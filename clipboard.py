@@ -13,13 +13,13 @@ class Clip_list(tkinter.Tk):
 		self.protocol('WM_DELETE_WINDOW', lambda: self.exit_sequence())
 		self.title('Clipboard History')		
 		#vars
-		self.geometry('300x360')
-		self.configure()
+		self.geometry('325x360')
 		self.resizable('false', 'false')
 		self._clip_wath = True
 		self._FINISH = False
 		self.text_lines_obj = []
 		self.button_obj = []
+		self.remove_button_obj = []
 		self.clips = []
 
 		self.ico_data = base64.b64decode(ico)
@@ -62,6 +62,11 @@ class Clip_list(tkinter.Tk):
 			if self._FINISH == True:
 				logging.debug('clip_watch finish = true')
 				return 0
+	#remove button
+	def button_remove_action(self, n):
+		self.clips.remove(self.clips[n])
+		self.clip_change()
+		
 	#If clip was changed, redraw whole lines and buttons			
 	def clip_change(self):
 		logging.debug('clip_change')
@@ -75,6 +80,11 @@ class Clip_list(tkinter.Tk):
 			self.button_obj[i].destroy()
 		for i in self.button_obj:
 			self.button_obj.remove(i)
+			
+		for i in range(len(self.remove_button_obj)):
+			self.remove_button_obj[i].destroy()
+		for i in self.remove_button_obj:
+			self.remove_button_obj.remove(i)
 
 		if len(self.clips) > 15:
 			self.clips = self.clips[:15]
@@ -84,12 +94,15 @@ class Clip_list(tkinter.Tk):
 		for i in range(len(self.clips)):
 			task_text = tkinter.Text(self, height = 1, relief = 'solid', borderwidth = 1, width = 37, font = ('calibri', '10'))
 			task_text.insert('1.0', self.clips[i])
-			task_button = tkinter.Button(self, bg = 'white', text = '\u2192', relief = 'solid', borderwidth = 1, command = lambda i=i: pyperclip.copy(self.clips[i]), font = ('calibri', '10'))
+			task_button = tkinter.Button(self, bg = 'white', text = '\u2192', relief = 'solid', borderwidth = 1, command = lambda i=i: pyperclip.copy(self.clips[i]), font = ('calibri', '8'))
+			task_remove_button = tkinter.Button(self, bg = 'white', text = ' X ', relief = 'solid', borderwidth = 1, command = lambda i=i: self.button_remove_action(i) , font = ('calibri', '8'))
 			task_text.config(state = 'disable')
 			task_text.grid(row = i, column = 2, padx = 3)
 			task_button.grid(row = i, column = 1, padx = 3)
+			task_remove_button.grid(row = i, column = 3, padx = 3)
 			self.text_lines_obj.append(task_text)
 			self.button_obj.append(task_button)
+			self.remove_button_obj.append(task_remove_button)
 			time.sleep(0.05)
 #--------------------------------------------------------------------------------	
 class About_w(tkinter.Toplevel):
