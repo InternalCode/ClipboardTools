@@ -34,8 +34,8 @@ class Clip_list(tkinter.Tk):
 		self.watch_thread.start()
 		
 		#debug threads
-		self.tables_debug_thread = threading.Thread(target = self.tables_debug_thread)
-		self.tables_debug_thread.start()
+		# ~ self.tables_debug_thread = threading.Thread(target = self.tables_debug_thread)
+		# ~ self.tables_debug_thread.start()
 		
 #--------------------------------------------------------------------------		
 	#debug thread
