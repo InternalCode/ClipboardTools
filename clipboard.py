@@ -13,7 +13,7 @@ class Clip_list(tkinter.Tk):
 		self.protocol('WM_DELETE_WINDOW', lambda: self.exit_sequence())
 		self.title('Clipboard History')		
 		#vars
-		self.geometry('325x360')
+		self.geometry('300x360')
 		self.resizable('false', 'false')
 		self._clip_wath = True
 		self._FINISH = False
@@ -32,7 +32,24 @@ class Clip_list(tkinter.Tk):
 		
 		self.watch_thread = threading.Thread(target = lambda: self.clip_watch())
 		self.watch_thread.start()
+		
+		#debug threads
+		self.tables_debug_thread = threading.Thread(target = self.tables_debug_thread)
+		self.tables_debug_thread.start()
+		
 #--------------------------------------------------------------------------		
+	#debug thread
+	def tables_debug_thread(self):
+		while True:
+			print('self.text_lines_obj\n %s' %(self.text_lines_obj))
+			print('self.button_obj\n %s' %(self.button_obj))
+			print('self.remove_button_obj\n %s' %(self.remove_button_obj))
+			print('self.clips\n %s' %(self.clips))
+			time.sleep(1)
+			if self._FINISH == True:
+				break
+		
+
 	def about_window(self, event):
 		self.child = About_w(self)
 		
@@ -73,17 +90,17 @@ class Clip_list(tkinter.Tk):
 		for i in range(len(self.text_lines_obj)):
 			self.text_lines_obj[i].destroy()
 			time.sleep(0.01)
-		for i in self.text_lines_obj:
+		for i in list(self.text_lines_obj):
 			self.text_lines_obj.remove(i)
 		
 		for i in range(len(self.button_obj)):
 			self.button_obj[i].destroy()
-		for i in self.button_obj:
+		for i in list(self.button_obj):
 			self.button_obj.remove(i)
 			
 		for i in range(len(self.remove_button_obj)):
 			self.remove_button_obj[i].destroy()
-		for i in self.remove_button_obj:
+		for i in list(self.remove_button_obj):
 			self.remove_button_obj.remove(i)
 
 		if len(self.clips) > 15:
@@ -92,7 +109,7 @@ class Clip_list(tkinter.Tk):
 			self.button_obj = self.button_obj[:15]
 		
 		for i in range(len(self.clips)):
-			task_text = tkinter.Text(self, height = 1, relief = 'solid', borderwidth = 1, width = 37, font = ('calibri', '10'))
+			task_text = tkinter.Text(self, height = 1, relief = 'solid', borderwidth = 1, width = 35, font = ('calibri', '10'))
 			task_text.insert('1.0', self.clips[i])
 			task_button = tkinter.Button(self, bg = 'white', text = '\u2192', relief = 'solid', borderwidth = 1, command = lambda i=i: pyperclip.copy(self.clips[i]), font = ('calibri', '8'))
 			task_remove_button = tkinter.Button(self, bg = 'white', text = ' X ', relief = 'solid', borderwidth = 1, command = lambda i=i: self.button_remove_action(i) , font = ('calibri', '8'))
